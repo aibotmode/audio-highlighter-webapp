@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Transcript</title>
+    <title>Upload Result</title>
 </head>
 <body>
-    <h1>Transcript</h1>
-    <p>{{ transcript }}</p> <!-- Flask will replace this with the transcript -->
+    <h1>File uploaded successfully: {{ filename }}</h1>
+    <audio controls>
+        <source src="{{ url_for('uploaded_file', filename=filename) }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <br>
+    <a href="/upload">Upload another file</a>
 </body>
 </html>

@@ -1,37 +1,39 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB max file size
 
-# Ensure upload folder exists
+# Configurations
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20 MB max file size
+
+# Ensure uploads directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-# Home route redirects to upload form
 @app.route('/')
 def index():
-    return redirect(url_for('upload_file'))
+    return "Hello, world!"
 
-# Upload form and file processing
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        # Check if 'file' is in request
         if 'file' not in request.files:
             return "No file part", 400
         file = request.files['file']
-        # Check if file is selected
         if file.filename == '':
             return "No selected file", 400
-        # If file is valid, save and confirm
         if file:
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+            filename = file.filename
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            return f"File uploaded successfully: {file.filename}"
-    # Render the upload form if GET request
+            # Pass filename to template to display audio player
+            return render_template('result.html', filename=filename)
     return render_template('upload.html')
 
-# Run app locally (this line won't affect Render)
+# Route to serve uploaded files
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 if __name__ == '__main__':
     app.run(debug=True)
