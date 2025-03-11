@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Audio</title>
+    <title>Upload</title>
 </head>
 <body>
     <h1>Upload an Audio File</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="audio_file" accept="audio/*" required>
-        <button type="submit">Upload</button>
+    <form method="POST" enctype="multipart/form-data" action="/upload">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
     </form>
 </body>
 </html>
