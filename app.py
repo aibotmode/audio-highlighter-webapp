@@ -2,12 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 import os
 
 app = Flask(__name__)
-
-# Configurations
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20 MB max file size
 
-# Ensure uploads directory exists
+# Ensure upload folder exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @app.route('/')
@@ -26,11 +24,10 @@ def upload_file():
             filename = file.filename
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            # Pass filename to template to display audio player
-            return render_template('result.html', filename=filename)
+            return render_template('results.html', filename=filename)
     return render_template('upload.html')
 
-# Route to serve uploaded files
+# Serve uploaded files for playback
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
